@@ -49,7 +49,20 @@ def saveArticle():
 
 @app.route('/memo', methods=['GET'])
 def showArticles():
-    return jsonify({"result": "Hello World!"})
+    data = []
+    articles = list(db.articles.find())
+    print(articles)
+    for article in articles:
+        data.append({
+            "title": article['title'],
+            "url": article['url'],
+            "imgUrl": article['imgUrl'],
+            "description": article['description'],
+            "comment": article['comment'],
+        })
+    return jsonify({
+        "data": data,
+        "result": "Hello World!"})
 
 
 if __name__ == '__main__':

@@ -50,15 +50,36 @@
         }
     </style>
     <script>
-        window.onload = async () => {
+
+        const showArticles = () => {
             fetch('/memo', {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                 },
             }).then(response => response.json())
-            .then(result => console.log(result));
-        };
+                .then(result => {
+                    const cardContainer = document.getElementById('cards-box');
+
+                    console.log(result.data);
+                    let html = "";
+                    result.data.forEach(article => {
+                        html += `<div class="card">
+                                    <img class="card-img-top"
+                                        src=${article.imgUrl}
+                                        alt="Card image cap">
+                                    <div class="card-body">
+                                        <a href=${article.url}class="card-title">${article.title}</a>
+                                        <p class="card-text">${article.description}</p>
+                                        <p class="card-text comment">${article.comment}</p>
+                                    </div>
+                                </div>`;
+                    });
+                    cardContainer.innerHTML += html;
+                });
+        }
+
+        window.onload = () => showArticles();
 
         function openclose() {
             let status = $('#post-box').css('display');
@@ -85,11 +106,11 @@
                     comment: comment,
                 }),
             }).then(response => response.json())
-            .then(result => console.log(result))
-            .catch(reject => {
-                console.log("문제 발생", reject);
-            })
-        }
+                .then(result => console.log(result))
+                .catch(reject => {
+                    console.log("문제 발생", reject);
+                })
+        };
     </script>
 </head>
 
