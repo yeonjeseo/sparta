@@ -51,7 +51,6 @@ def saveArticle():
 def showArticles():
     data = []
     articles = list(db.articles.find())
-    print(articles)
     for article in articles:
         data.append({
             "title": article['title'],
