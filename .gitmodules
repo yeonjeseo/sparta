@@ -1,0 +1,3 @@
+[submodule "week3/week3/requests"]
+	path = week3/week3/requests
+	url = git://github.com/psf/requests.git
