@@ -17,16 +17,15 @@ def home():
 # API 역할을 하는 부분
 @app.route('/api/list', methods=['GET'])
 def show_stars():
-    data = []
-    stars = list(db.mystar.find().sort("like", -1))
-    print(stars[0])
-    for star in stars:
-        data.append({
-            "name": star['name'],
-            "like": star['like'],
-            "imgUrl": star['img_url']
-        })
-    return jsonify({'stars': data})
+    # data = []
+    stars = list(db.mystar.find({}, {"_id": False}).sort("like", -1))
+    # for star in stars:
+    #     data.append({
+    #         "name": star['name'],
+    #         "like": star['like'],
+    #         "imgUrl": star['img_url']
+    #     })
+    return jsonify({'stars': stars})
 
 
 @app.route('/api/like', methods=['POST'])
