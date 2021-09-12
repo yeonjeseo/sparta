@@ -50,7 +50,6 @@
         }
     </style>
     <script>
-
         const showArticles = () => {
             fetch('/memo', {
                 method: "GET",
@@ -105,7 +104,7 @@
                     articleUrl: url,
                     comment: comment,
                 }),
-            }).then(() => location.reload())
+            }).then(() => window.location.reload())
                 .catch(reject => {
                     console.log("문제 발생", reject);
                 })
