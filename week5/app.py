@@ -18,7 +18,7 @@ def home():
 @app.route('/api/list', methods=['GET'])
 def show_stars():
     data = []
-    stars = list(db.mystar.find())
+    stars = list(db.mystar.find().sort("like", -1))
     print(stars[0])
     for star in stars:
         data.append({

@@ -45,8 +45,8 @@
           let html = "";
           console.log(response);
           //sort stars by like, DESC
-          sortedStars = response.stars.sort((prev, curr) => curr.like - prev.like);
-          sortedStars.forEach(star => {
+          // sortedStars = response.stars.sort((prev, curr) => curr.like - prev.like);
+          response.stars.forEach(star => {
             html += `<div class="card">
                       <div class="card-content">
                         <div class="media">
