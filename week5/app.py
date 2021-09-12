@@ -34,7 +34,7 @@ def like_star():
     db.mystar.find_one_and_update({"name": target}, {'$inc': {
         "like": 1
     }})
-    return jsonify({'msg': 'like 연결되었습니다!'})
+    return jsonify({'msg': '{target} 좋아요!'.format(target=target)})
 
 
 @app.route('/api/delete', methods=['POST'])
