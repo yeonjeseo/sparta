@@ -10,7 +10,7 @@ const showStar = async () => {
       "Content-Type": "application/json",
     },
   });
-  if (response.status !== 200) console.log("GET request error!");
+  if (response.status !== 200) alert("GET request error!");
   const result = await response.json();
   const stars = result.stars;
   let html = "";
