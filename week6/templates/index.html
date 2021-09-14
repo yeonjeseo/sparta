@@ -5,13 +5,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Seperated JavaScript -->
   <script defer src="../static/js/main.js"></script>
+
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
   integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   <!-- jQuery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+  </script>
+
+  <!-- Cookie -->
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js">
+  </script>
+
   <title>Document</title>
 </head>
 <body>
@@ -20,6 +29,15 @@
   <a href="/login">
     <button type="button" class="btn btn-primary" id="like">로그인 페이지</button>
   </a>
+  <a href="/signup">
+    <button type="button" class="btn btn-primary" id="like">회원가입 페이지</button>
+  </a>
+  <button type="button" class="btn btn-primary" id="logout">로그아웃하기</button>
+  <button type="button" class="btn btn-primary" id="posting">포스팅하기!</button>
+  <button type="button" class="btn btn-primary" id="delete-posting">포스팅 하나 지우기!</button>
+  <input type="text" id="comment-box">
+  <button type="submit" class="btn btn-primary" id="submit-comment">댓글 제출!</button>
+
   
 </body>
 </html>
