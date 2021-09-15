@@ -43,22 +43,28 @@ def singup():
 
 @app.route('/api/like', methods=['POST'])
 def addLike():
-    target = request.form['target']
-    db.postings.find_one_and_update({"title": target}, {'$inc': {
-        "like": 1
-    }})
-    return jsonify({'msg': '{target} 좋아요!'.format(target=target)})
+    title = request.form['title']
+    try:
+        db.postings.find_one_and_update({"title": title}, {'$inc': {
+            "like": 1
+        }})
+    except:
+        print("오류 발생")
+    return jsonify({'msg': '{target} 좋아요!'.format(target=title)})
 
 # add dislike
 
 
 @app.route('/api/dislike', methods=['POST'])
 def addDislike():
-    target = request.form['target']
-    db.postings.find_one_and_update({"title": target}, {'$inc': {
-        "dislike": 1
-    }})
-    return jsonify({'msg': '{target} 싫어요!'.format(target=target)})
+    title = request.form['title']
+    try:
+        db.postings.find_one_and_update({"title": title}, {'$inc': {
+            "dislike": 1
+        }})
+    except:
+        print("오류 발생")
+    return jsonify({'msg': '{target} 싫어요!'.format(target=title)})
 
 
 # register
@@ -68,15 +74,17 @@ def addDislike():
 def newSignup():
     id = request.form['id']
     pw = request.form['pw']
-    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    hashedPw = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     user = {
         "id": id,
-        "pw": pw_hash,
-        "posts": [],
-        "comments": []
+        "hashedPw": hashedPw,
+        "postings": [],
     }
-    db.users.insert_one(user)
-    print(id, pw)
+    try:
+        db.users.insert_one(user)
+    except:
+        print("오류 발생")
+
     return jsonify({
         'result': 'success',
         "msg": '{id} 회원가입이 완료되었습니다!'.format(id=id)})
@@ -91,22 +99,17 @@ def apiLogin():
     pw = request.form['pw']
 
     # 회원가입 때와 같은 방법으로 pw를 암호화합니다.
-    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
-    print(pw_hash)
-    # id, 암호화된pw을 가지고 해당 유저를 찾습니다.
-    result = db.users.find_one({'id': id, 'pw': pw_hash})
+    hashedPw = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
-    if result is not None:
+    user = db.users.find_one({'id': id, 'pw': hashedPw})
+    if user is not None:
         payload = {
-            'id': id,
+            'id': user["id"],
             'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=60 * 60 * 24)
         }
         token = jwt.encode(payload, SECRET_KEY,
                            algorithm='HS256').decode('utf-8')
-
-        # token을 줍니다.
         return jsonify({'result': 'success', 'token': token})
-    # 찾지 못하면
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
@@ -124,31 +127,31 @@ def apiPosting():
     token = request.cookies.get('mytoken')
     payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
     user = db.users.find_one({"id": payload['id']})
-    # 스크래핑할 url 받아오기
+    # 스크래핑
     url = request.form['url']
-
-    # 여기서 스크래핑
     data = requests.get(url, headers=headers)
     soup = BeautifulSoup(data.text, 'html.parser')
     title = soup.select_one(
         '#content > div.article > div.mv_info_area > div.mv_info > h3 > a:nth-child(1)').text
+    description = soup.select_one(
+        '#content > div.article > div.section_group.section_group_frst > div:nth-child(1) > div > div.story_area > p').text
 
     # db.postings collection에 저장하기
     posting = {
-        "title": title,
         "url": url,
+        "title": title,
+        "description": description,
         "like": 0,
         "dislike": 0,
-        "owner": user["_id"]
+        "owner": user["id"],
+        "comments": []
     }
     result = db.postings.insert_one(posting)
-    # print(result.inserted_id)
 
     # user에도 저장하기
     db.users.update_one(
-        user, {"$push": {'posts': ObjectId(result.inserted_id)}})
-    # user = db.users.find_one_and_update(
-    #     {'id': payload['id']}, {"$push": {'posts': url}})
+        user, {"$push": {'postings': posting}})
+
     return jsonify({'result': "success", 'msg': '포스팅 완료!'})
 
 # delete a post
@@ -156,52 +159,47 @@ def apiPosting():
 
 @app.route('/api/delete', methods=['POST'])
 def apiDelete():
+    title = request.form['title']
     # 현재 접속중인 사람이 누군지 알기 위해서 토큰 복호화
     token = request.cookies.get('mytoken')
     payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
     user = db.users.find_one({"id": payload['id']})
-
-    target = request.form['title']
     # postings collection 에서 삭제
-    post = db.postings.find_one({"title": target, "owner": user['_id']})
+    # posting = db.postings.find_one({"title": title, "owner": user['id']})
     # 쿼리에 dictionary 타입을 쓸 수 없는데, 그래서 ObjectId 타입을 string으로 변환
     # 그리고 그걸 다시 ObjectId 타입으로 변환해서 쿼리에 사용
-    postId = str(post['_id'])
-    db.postings.delete_one(post)
+    # postId = str(post['_id'])
+    # db.postings.delete_one(post)
+    db.postings.find_one_and_delete(
+        {"title": title, "owner": user["id"]})
 
-    print(postId)
-    db.users.update_one(user, {'$pull': {
-        'posts': ObjectId(postId)}})
-    return jsonify({'msg': '{target} 삭제되었습니다.'.format(target=target)})
+    db.users.find_one_and_update({"id": user["id"]}, {"$pull": {
+        "postings": {"title": title}
+    }})
+
+    return jsonify({"result": "success", 'msg': '{target} 삭제되었습니다.'.format(target=title)})
 
 # Add comment
 
 
 @app.route('/api/add-comment', methods=['POST'])
 def addComment():
-    # 현재 접속중인 사람이 누군지 알기 위해서 토큰 복호화
+    title = request.form['title']
+    message = request.form['comment']
+
     token = request.cookies.get('mytoken')
     payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-    user = db.users.find_one({"id": payload['id']})
-    owner = db.postings.find_one({"title": request.form['owner']})
-    comment = request.form['comment']
+    userId = db.users.find_one({"id": payload['id']})["id"]
 
-    document = {
-        "comment": comment,
-        "author": user['_id'],
-        "owner": owner['_id']
+    comment = {
+        "author": userId,
+        "message": message
     }
-    # db comments collection에 저장
-    result = db.comments.insert_one(document)
 
-    # users collection에 저장
-    db.users.update_one(user, {'$push': {
-        "comments": ObjectId(result.inserted_id)
-    }})
-
-    # postings collection에 저장
-    db.collections.update_one(
-        owner, {'$push': {"comments": result.inserted_id}})
+    db.postings.find_one_and_update({"title": title}, {
+        '$push': {
+            "comments": comment}
+    })
 
     return jsonify({'result': "success", 'msg': '댓글 추가 완료!'})
 
