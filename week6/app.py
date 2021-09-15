@@ -76,10 +76,10 @@ def newSignup():
     id_receive = request.form['id_give']
     pw_receive = request.form['pw_give']
 
-    if db.users.find({"id": id_receive}) != None:
+    if db.users.find({"id": id_receive}).count() > 0:
         return jsonify({
             "result": "failure",
-            "msg": "이미 존재하는 계정입니다."
+            "msg": "12312이미 존재하는 계정입니다."
         })
 
     hashedPw = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
