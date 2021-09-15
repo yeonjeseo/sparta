@@ -26,7 +26,7 @@ headers = {
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('main.html')
 
 
 @app.route('/login')
@@ -34,9 +34,9 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/signup')
+@app.route('/join')
 def singup():
-    return render_template('signup.html')
+    return render_template('join.html')
 
 # add like
 
@@ -64,17 +64,19 @@ def addDislike():
 # register
 
 
-@app.route('/api/signup', methods=['POST'])
+@app.route('/api/join', methods=['POST'])
 def newSignup():
     id = request.form['id']
     pw = request.form['pw']
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     user = {
         "id": id,
-        "pw": pw_hash
+        "pw": pw_hash,
+        "posts": [],
+        "comments": []
     }
     db.users.insert_one(user)
-    print(id, pw_hash)
+    print(id, pw)
     return jsonify({
         'result': 'success',
         "msg": '{id} 회원가입이 완료되었습니다!'.format(id=id)})
