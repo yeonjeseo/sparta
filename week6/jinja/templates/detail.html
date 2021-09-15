@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+  </script>
+</head>
+
+<body>
+  <h2>상세 페이지</h2>
+  <button onclick=" window.location.href = '/';">메인 페이지로 가기</button>
+  <ul id="gu-list">
+  {% for gu in gus %}
+    {% set name = gu["MSRSTE_NM"]%}
+    {% set stat = gu['IDEX_MVL']|int%}
+    {% if stat >= 50%}
+    <li>{{name}} : {{stat}}</li>
+    {% endif%}
+  {% endfor %}
+  </ul>
+
+</html>
