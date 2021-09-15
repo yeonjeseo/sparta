@@ -11,8 +11,11 @@ soup = BeautifulSoup(data.text, 'html.parser')
 
 genres = soup.select(
     '#content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(1) > a')
+imageUrl = soup.select_one(
+    '#content > div.article > div.mv_info_area > div.poster > a > img')['src']
+print(imageUrl)
 
-genresArray = []
-for genre in genres:
-    genresArray.append(genre.text)
-print(genresArray)
+# genresArray = []
+# for genre in genres:
+#     genresArray.append(genre.text)
+# print(genresArray)
