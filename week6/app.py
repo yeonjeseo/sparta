@@ -1,6 +1,6 @@
 import datetime
 import hashlib
-from bson.objectid import ObjectId
+from flask.helpers import url_for
 import requests
 import jwt
 from pymongo import MongoClient
@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 
 from flask import Flask, render_template, jsonify, request
 from requests.api import post
+from werkzeug.utils import redirect
 
 app = Flask(__name__)
 
@@ -20,7 +21,6 @@ SECRET_KEY = "SPARTA"
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
 
-
 # route
 
 
@@ -31,7 +31,7 @@ def home():
 
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    return render_template("login.html")
 
 
 @app.route('/join')
@@ -72,11 +72,18 @@ def addDislike():
 
 @app.route('/api/join', methods=['POST'])
 def newSignup():
-    id = request.form['id']
-    pw = request.form['pw']
-    hashedPw = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    id_receive = request.form['id_give']
+    pw_receive = request.form['pw_give']
+
+    if db.users.find({"id": id_receive}) != None:
+        return jsonify({
+            "result": "failure",
+            "msg": "이미 존재하는 계정입니다."
+        })
+
+    hashedPw = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
     user = {
-        "id": id,
+        "id": id_receive,
         "hashedPw": hashedPw,
         "postings": [],
     }
@@ -95,13 +102,13 @@ def newSignup():
 
 @app.route('/api/login', methods=['POST'])
 def apiLogin():
-    id = request.form['id']
-    pw = request.form['pw']
+    id_receive = request.form['id_give']
+    pw_receive = request.form['pw_give']
 
     # 회원가입 때와 같은 방법으로 pw를 암호화합니다.
-    hashedPw = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    hashedPw = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 
-    user = db.users.find_one({'id': id, 'pw': hashedPw})
+    user = db.users.find_one({'id': id_receive, 'hashedPw': hashedPw})
     if user is not None:
         payload = {
             'id': user["id"],
@@ -118,7 +125,7 @@ def apiLogin():
 
 @app.route('/api/logout', methods=['POST'])
 def apiLogout():
-    return jsonify({'result': "success", 'msg': '로그아웃되었습니다'})
+    return jsonify({'result': "success", 'msg': '로그아웃되었습니다'}) if request.cookies.get("mytoken") == None else jsonify({"result": "failure", "msg": "로그아웃에 실패하였습니다."})
 
 
 @app.route('/api/url', methods=['POST'])
@@ -133,8 +140,20 @@ def apiPosting():
     soup = BeautifulSoup(data.text, 'html.parser')
     title = soup.select_one(
         '#content > div.article > div.mv_info_area > div.mv_info > h3 > a:nth-child(1)').text
+
+    # 중복 확인
+    if db.postings.find({"title": title}) != None:
+        return redirect(url_for("home", msg="이미 존재하는 영화입니다."))
+
     description = soup.select_one(
         '#content > div.article > div.section_group.section_group_frst > div:nth-child(1) > div > div.story_area > p').text
+
+    # 요소에서 장르의 텍스트만 추출해서 배열에 저장
+    genresArray = []
+    genres = soup.select(
+        '#content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(1) > a')
+    for genre in genres:
+        genresArray.append(genre.text)
 
     # db.postings collection에 저장하기
     posting = {
@@ -144,9 +163,11 @@ def apiPosting():
         "like": 0,
         "dislike": 0,
         "owner": user["id"],
-        "comments": []
+        "comments": [],
+        "genres": genresArray
     }
-    result = db.postings.insert_one(posting)
+
+    db.postings.insert_one(posting)
 
     # user에도 저장하기
     db.users.update_one(
@@ -164,8 +185,6 @@ def apiDelete():
     token = request.cookies.get('mytoken')
     payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
     user = db.users.find_one({"id": payload['id']})
-    # postings collection 에서 삭제
-    # posting = db.postings.find_one({"title": title, "owner": user['id']})
     # 쿼리에 dictionary 타입을 쓸 수 없는데, 그래서 ObjectId 타입을 string으로 변환
     # 그리고 그걸 다시 ObjectId 타입으로 변환해서 쿼리에 사용
     # postId = str(post['_id'])

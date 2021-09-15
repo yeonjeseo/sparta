@@ -142,7 +142,6 @@
             $("#submit").click(function () {
                 let id = $('#id').val()
                 let pw = $('#pw').val()
-                let doc = $('#doc').val()
 
 
                 if ($("#id").val() == '') {
@@ -164,8 +163,8 @@
                         type: "POST",
                         url: "/api/join",
                         data: {
-                            id: id,
-                            pw: pw,
+                            id_give: $('#id').val(),
+                            pw_give: $('#pw').val(),
                         },
                         success: function (response) {
                             if (response["result"] == "success") {

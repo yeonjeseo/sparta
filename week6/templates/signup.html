@@ -22,8 +22,8 @@
         type: "POST",
         url: "/api/signup",
         data: {
-          id: $("#userid").val(),
-          pw: $("#userpw").val(),
+          id_give: $("#userid").val(),
+          pw_give: $("#userpw").val(),
         },
         success: function (response) {
           if (response["result"] == "success") {
