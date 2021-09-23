@@ -6,14 +6,15 @@ const port = 3000;
 
 const connect = require("./schemas");
 connect();
-const goodsRouter = require("./routes/goods");
+
+// const goodsRouter = require("./routes/goods");
 const userRouter = require("./routes/user");
 
-// let express uderstands and transforms the form values into javascript
-app.use(express.urlencoded({ extended: true }));
-// let express to understands the text data
-app.use(express.json());
+const goodsRouter = require("./routers/goods");
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/api", [goodsRouter]);
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 
