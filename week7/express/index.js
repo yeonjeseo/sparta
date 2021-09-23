@@ -43,9 +43,17 @@ app.get("/home", (req, res) => {
   res.render("index");
 });
 
+app.get("/cart", (req, res) => {
+  res.render("cart");
+});
+
 app.get("/detail", (req, res) => {
   console.log(req.query);
   res.render("detail");
+});
+
+app.get("/order", (req, res) => {
+  res.render("order");
 });
 
 app.listen(port, () => {
