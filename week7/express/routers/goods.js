@@ -3,6 +3,44 @@ const Goods = require("../schemas/Goods");
 const Cart = require("../schemas/cart");
 const router = express.Router();
 
+const cheerio = require("cheerio");
+const axios = require("axios");
+const iconv = require("iconv-lite");
+const url = "http://www.yes24.com/24/Category/BestSeller";
+
+//////
+router.get("/goods/add/crawling", async (req, res) => {
+  try {
+    await axios({
+      url: url,
+      method: "GET",
+      responseType: "arraybuffer",
+    }).then(async (html) => {
+      const content = iconv.decode(html.data, "EUC-KR").toString();
+      const $ = cheerio.load(content);
+      const list = $("ol li");
+      // console.log(list);
+      await list.each(async (i, tag) => {
+        // p 태그이면서 copy 클래스를 가진 요소의 자식들 중 a 태그 요소
+        let desc = $(tag).find("p.copy a").text();
+        let image = $(tag).find("p.image a img").attr("src");
+        let title = $(tag).find("p.image a img").attr("alt");
+        let price = $(tag).find("p.price strong").text();
+        console.log(desc, image, title, price);
+      });
+    });
+    res.send({ result: "success", message: "크롤링이 완료 되었습니다." });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      result: "fail",
+      message: "크롤링에 문제가 발생했습니다",
+      error: error,
+    });
+  }
+});
+//////
+
 router.get("/goods", async (req, res, next) => {
   try {
     const { category } = req.query;
@@ -99,12 +137,6 @@ router.patch("/goods/:goodsId/cart", async (req, res) => {
   }
 
   res.send({ result: "success", msg: "수량 변경 완료" });
-  // try {
-  //   await Cart.findOneAndUpdate({ goodsId }, { $set: { quantity } });
-  //   res.send({ result: "success" });
-  // } catch {
-  //   console.log("Error!");
-  //   res.end();
-  // }
 });
+
 module.exports = router;
