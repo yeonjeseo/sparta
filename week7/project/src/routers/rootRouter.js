@@ -3,7 +3,7 @@ import { home } from "../controller/controller.js";
 
 const rootRouter = express.Router();
 
-rootRouter.get("/", home);
+rootRouter.get("", home);
 
 // rootRouter.get("/comment", getPosting)
 
