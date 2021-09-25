@@ -44,32 +44,46 @@ export const readAllComment = async (req, res) => {
 
 // CRUD : U
 export const patchComment = async (req, res) => {
-  const { title, author, comment, password } = req.body;
+  const { title, comment, password } = req.body;
   const { id } = req.params;
 
   const post = await Post.findById(id);
+  // compare pw
+  const isMatched = await bcrypt.compare(password, post.password);
 
-  // const isMatched = bcrypt.compare(password);
-
-  console.log(post);
-  // try {
-  //   await Post.findByIdAndUpdate(id, {
-  //     $set: post,
-  //   });
-  //   console.log(post);
-  //   return res.status(200).send({ result: "UPDATE success" });
-  // } catch {
-  //   return res.status(400).send({ result: "UPDATE failure" });
-  // }
+  if (isMatched) {
+    try {
+      await Post.updateOne(post, {
+        $set: {
+          title,
+          comment,
+        },
+      });
+      return res
+        .status(200)
+        .send({ result: "UPDATE success", msg: "수정 완료되었습니다." });
+    } catch (err) {
+      return res.status(400).send({ result: "UPDATE failure", msg: err });
+    }
+  } else {
+    return res
+      .status(400)
+      .send({ result: "UPDATE failure", msg: "비밀번호가 일치하지 않습니다." });
+  }
 };
 
 // CRUD : D
 export const deleteComment = async (req, res) => {
-  const id = mongoose.Types.ObjectId("614dbfce5fbf9e6decaf7d2c");
+  const { id } = req.params;
+  console.log(id);
   try {
     await Post.findByIdAndRemove(id);
-    return res.status(200).send({ result: "DELETE success" });
+    return res
+      .status(200)
+      .send({ result: "DELETE success", msg: "삭제 완료되었습니다." });
   } catch {
-    return res.status(404).send({ result: "DELETE failure" });
+    return res
+      .status(400)
+      .send({ result: "DELETE failure", msg: "삭제 실패했습니다." });
   }
 };

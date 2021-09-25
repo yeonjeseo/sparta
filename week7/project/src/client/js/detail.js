@@ -28,9 +28,31 @@ const handleUpdateSubmit = async () => {
     },
     body: JSON.stringify(updatedPost),
   });
+  if (response.status === 400) {
+    // const result = await response.json();
+    window.alert((await response.json()).msg);
+  } else {
+    window.alert((await response.json()).msg);
+    location.reload();
+  }
+};
+
+const handleDeleteSubmit = async () => {
+  const response = await fetch(`/api/comment/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   const result = await response.json();
-  console.log(result);
+  window.alert(result.msg);
+  if (response.status === 200) {
+    location.href = "/";
+  } else {
+    return;
+  }
 };
 
 updateBtn.addEventListener("click", handleUpdateSubmit);
+deleteBtn.addEventListener("click", handleDeleteSubmit);
