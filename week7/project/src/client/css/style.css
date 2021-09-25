@@ -1,63 +1,39 @@
-.bg-sparta {
-  background-color: #e8344e !important;
-}
-
-.btn-sparta {
-  color: #ffffff !important;
-  background-color: #e8344e !important;
-  border-color: #e8344e !important;
-}
-
-.btn-outline-sparta {
-  color: #e8344e !important;
-  background-color: #ffffff !important;
-  border-color: #e8344e !important;
-}
-
-.navbar-dark .navbar-nav .nav-link {
-  color: #ffffff;
-}
-
-.navbar-dark .navbar-nav .nav-link:focus,
-.navbar-dark .navbar-nav .nav-link:hover {
-  color: #ffffff;
-}
-
-.wrap {
-  width: 80%;
-  max-width: 600px;
-  margin: 10px auto;
-}
-
-.modal-header {
-  border-bottom-color: #ffffff;
-}
-
-.modal-footer {
-  border-top-color: #ffffff;
-}
-
-.alert {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  margin-bottom: 0;
+body {
+  font: 12px Arial, Tahoma, Helvetica, FreeSans, sans-serif;
+  text-transform: inherit;
+  color: #333;
+  background: #e7edee;
   width: 100%;
 }
-
-@media screen and (min-width: 576px) {
-  .alert {
-    width: fit-content;
-    max-width: 480px;
-  }
+.wrap {
+  width: 720px;
+  margin: 15px auto;
+  padding: 15px 10px;
+  background: white;
+  border: 2px solid #dbdbdb;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.title,
+.userName {
+  font-weight: 700;
 }
 
-.alert-sparta {
-  color: #e8344e;
-  background-color: #ffe7ff;
-  border-color: #ffcde7;
+.post {
+  border-bottom: 1px solid black;
+  padding-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center; */
+  justify-content: space-between;
 }
-
-.alert-sparta .alert-link {
-  color: #360000;
+.post .title {
+  font-style: italic;
+}
+.post .body {
+  margin-top: 5px;
+}
+.modify-icon {
+  width: 100px;
 }

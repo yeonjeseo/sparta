@@ -3,13 +3,16 @@ import Post from "../models/post.js";
 import bcrypt from "bcrypt";
 
 export const home = async (req, res) => {
-  return res.render("index");
+  return res.render("main");
 };
 
 export const getComment = async (req, res) => {
-  return res.render("comment");
+  return res.render("create");
 };
 
+export const getDetail = (req, res) => {
+  return res.send("Fuck you");
+};
 // CRUD : C
 export const postComment = async (req, res) => {
   const { title, author, comment } = req.body;

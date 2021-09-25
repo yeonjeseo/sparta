@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- JavaScript -->
+    <script defer src="/static/js/main.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <div>
+            <h1 class="title"> Filters </h1>
+
+            <div class="byUser">
+                <span class="title">All post by User : </span>
+                <select id="selUser">
+                    <option value=0>All</option>
+                </select>
+                <button type="button" onclick="searchUser()">Search </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="wrap">
+        <div>
+            <h1 class="title">Posts</h1>
+        </div>
+        <div class="reply" id="postContainer">
+            <div class="post">
+                <div class="card__typo">
+                    <div class="userName">
+                        <span>By: Leanne Graham</span>
+                    </div>
+                    <div class="title">
+                        sunt aut facere repellat provident occaecati excepturi optio reprehenderit     
+                    </div>
+                    <p class="body">
+                        quia et suscipit
+                        suscipit recusandae consequuntur expedita et cum
+                        reprehenderit molestiae ut ut quas totam
+                        nostrum rerum est autem sunt rem eveniet architecto
+                    </p>
+                </div>
+                <div class="card__modify">
+                    <a href="/">
+                        <img class="modify-icon" src="/static/img/pencil.png" alt="">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
