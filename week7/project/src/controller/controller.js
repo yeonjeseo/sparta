@@ -10,8 +10,11 @@ export const getComment = async (req, res) => {
   return res.render("create");
 };
 
-export const getDetail = (req, res) => {
-  return res.send("Fuck you");
+export const getDetail = async (req, res) => {
+  const { id } = req.params;
+  const post = await Post.findById(id);
+  console.log(post);
+  return res.render("detail", { post });
 };
 // CRUD : C
 export const postComment = async (req, res) => {
@@ -41,21 +44,23 @@ export const readAllComment = async (req, res) => {
 
 // CRUD : U
 export const patchComment = async (req, res) => {
-  const id = mongoose.Types.ObjectId("614d9aa8d5ee753a4cda3e7d");
-  const post = {
-    title: "Changed title",
-    comment: "Changed Comment",
-  };
+  const { title, author, comment, password } = req.body;
+  const { id } = req.params;
 
-  try {
-    await Post.findByIdAndUpdate(id, {
-      $set: post,
-    });
-    console.log(post);
-    return res.send({ result: "UPDATE success" });
-  } catch {
-    return res.status(404).send({ result: "UPDATE failure" });
-  }
+  const post = await Post.findById(id);
+
+  // const isMatched = bcrypt.compare(password);
+
+  console.log(post);
+  // try {
+  //   await Post.findByIdAndUpdate(id, {
+  //     $set: post,
+  //   });
+  //   console.log(post);
+  //   return res.status(200).send({ result: "UPDATE success" });
+  // } catch {
+  //   return res.status(400).send({ result: "UPDATE failure" });
+  // }
 };
 
 // CRUD : D

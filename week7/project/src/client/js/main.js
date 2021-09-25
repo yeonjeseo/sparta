@@ -1,5 +1,5 @@
 console.log("Hello World!");
-const handleHloadContent = async () => {
+const handleLoadContent = async () => {
   const parentNode = document.getElementById("postContainer");
 
   const response = await fetch("/api/comment", {
@@ -39,7 +39,7 @@ const handleHloadContent = async () => {
   });
   parentNode.innerHTML = html;
 };
-window.addEventListener("DOMContentLoaded", handleHloadContent);
+window.addEventListener("DOMContentLoaded", handleLoadContent);
 // var getData = [];
 // var usersList = [];
 

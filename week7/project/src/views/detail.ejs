@@ -4,9 +4,34 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script defer src="/static/js/detail.js"></script>
+
   <title>Document</title>
 </head>
 <body>
-  
+  <main>
+    <div class="container" id="postId" data-id="<%= post._id %>">
+      <div class="title__container">
+        <label for="">Title</label>
+        <input type="text" id="input-title" value="<%= post.title %>">
+      </div>
+      <div class="title__container">
+        <label for="">Author</label>
+        <input type="text" id="input-author" value="<%= post.author%>">
+      </div>
+      <div class="comment__container">
+        <label for="">Comment</label>
+        <input type="text" id="input-comment" value="<%= post.comment %>">
+      </div>
+      <div class="password__container">
+        <label for="">password</label>
+        <input type="text" id="input-password">
+      </div>
+
+      <button type="submit", id="submitUpdate">수정하기</button>
+      <button type="submit" id="submitDelete">삭제하기</button>
+    </div>
+  </main>
 </body>
 </html>
