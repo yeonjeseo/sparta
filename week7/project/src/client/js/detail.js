@@ -38,11 +38,15 @@ const handleUpdateSubmit = async () => {
 };
 
 const handleDeleteSubmit = async () => {
+  const password = document.getElementById("input-password").value;
   const response = await fetch(`/api/comment/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      password,
+    }),
   });
 
   const result = await response.json();

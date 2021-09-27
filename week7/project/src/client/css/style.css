@@ -5,6 +5,26 @@ body {
   background: #e7edee;
   width: 100%;
 }
+#navbar {
+  background-color: bisque;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  height: 3rem;
+}
+.navbar__menu {
+  display: flex;
+  list-style: none;
+  margin-bottom: 0;
+}
+.navbar__menu__item {
+  height: 2rem;
+  line-height: 2rem;
+  padding-left: 2rem;
+  cursor: pointer;
+}
 .wrap {
   width: 720px;
   margin: 15px auto;

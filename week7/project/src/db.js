@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb://localhost:27017/myComment", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  "mongodb://yeonje:6350@0.0.0.0:27017/myComment?authSource=admin",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 const db = mongoose.connection;
 

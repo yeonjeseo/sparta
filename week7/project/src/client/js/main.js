@@ -1,4 +1,3 @@
-console.log("Hello World!");
 const handleLoadContent = async () => {
   const parentNode = document.getElementById("postContainer");
 
@@ -11,7 +10,6 @@ const handleLoadContent = async () => {
   // console.log(await response.json());
 
   const comments = (await response.json()).comments;
-  console.log(comments);
 
   let html = "";
   comments.forEach((comment) => {

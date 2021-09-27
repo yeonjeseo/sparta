@@ -38,7 +38,6 @@ export const postComment = async (req, res) => {
 // CRUD : Read
 export const readAllComment = async (req, res) => {
   const comments = await Post.find({}).sort({ createdAt: -1 });
-  console.log(comments);
   return res.status(200).send({ result: "READ all success", comments });
 };
 
@@ -50,6 +49,7 @@ export const patchComment = async (req, res) => {
   const post = await Post.findById(id);
   // compare pw
   const isMatched = await bcrypt.compare(password, post.password);
+  // const isMatched =  bcrypt.compareSync(password, post.password);
 
   if (isMatched) {
     try {
@@ -74,16 +74,28 @@ export const patchComment = async (req, res) => {
 
 // CRUD : D
 export const deleteComment = async (req, res) => {
+  const { password } = req.body;
   const { id } = req.params;
-  console.log(id);
-  try {
-    await Post.findByIdAndRemove(id);
-    return res
-      .status(200)
-      .send({ result: "DELETE success", msg: "삭제 완료되었습니다." });
-  } catch {
+
+  const post = await Post.findById(id);
+
+  const isMatched = await bcrypt.compare(password, post.password);
+
+  if (isMatched) {
+    try {
+      await Post.deleteOne(post);
+      // await Post.findByIdAndRemove(id);
+      return res
+        .status(200)
+        .send({ result: "DELETE success", msg: "삭제 완료되었습니다." });
+    } catch {
+      return res
+        .status(400)
+        .send({ result: "DELETE failure", msg: "삭제 실패했습니다." });
+    }
+  } else {
     return res
       .status(400)
-      .send({ result: "DELETE failure", msg: "삭제 실패했습니다." });
+      .send({ result: "DELETE failure", msg: "비밀번호가 일치하지 않습니다." });
   }
 };
