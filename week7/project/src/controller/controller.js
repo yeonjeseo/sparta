@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Post from "../models/post.js";
+import Post from "../models/Post.js";
 import bcrypt from "bcrypt";
 
 export const home = async (req, res) => {

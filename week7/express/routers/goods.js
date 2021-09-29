@@ -19,14 +19,28 @@ router.get("/goods/add/crawling", async (req, res) => {
       const content = iconv.decode(html.data, "EUC-KR").toString();
       const $ = cheerio.load(content);
       const list = $("ol li");
-      // console.log(list);
       await list.each(async (i, tag) => {
-        // p 태그이면서 copy 클래스를 가진 요소의 자식들 중 a 태그 요소
         let desc = $(tag).find("p.copy a").text();
         let image = $(tag).find("p.image a img").attr("src");
         let title = $(tag).find("p.image a img").attr("alt");
         let price = $(tag).find("p.price strong").text();
-        console.log(desc, image, title, price);
+
+        if (desc && image && title && price) {
+          // price = price.split(",").join("").slice(0, -1);
+          price = price.slice(0, -1).replace(/(,)/g, "");
+          let date = new Date();
+          // generate unique Id using time
+          let goodsId = date.getTime();
+          // console.log(price);
+          // console.log(goodsId);
+          await Goods.create({
+            goodsId,
+            name: title,
+            thumbnailUrl: image,
+            category: "Book",
+            price,
+          });
+        }
       });
     });
     res.send({ result: "success", message: "크롤링이 완료 되었습니다." });
